@@ -14,6 +14,7 @@ class App extends Component {
       todos
     }
     this.updateTodos = this.updateTodos.bind(this) // bind the context IMPORTANT!
+    this.toggleTodo = this.toggleTodo.bind(this)
   }
   // updates state with new todo item
   updateTodos(text) {
@@ -26,16 +27,24 @@ class App extends Component {
         text: text}]
     })
   }
+  toggleTodo(id) {
+    const todo = this.state.todos.filter((elem) => elem.id === id)[0] //find a todo to update
+    if(todo !== undefined) {
+      todo.completed = !todo.completed //toggle
+      this.setState(Object.assign({},this.state,{ //Object.assign() returns a new object (useful when you don't want to mutate data) and is simillar to array spread operator
+        todos:this.state.todos
+      }))
+    }
+  }
   //renders input field with prop function that will update the state
   //App in the only component to update the state
-  //temporarily log something  when todoItem is clicked. Later that will toggle a todo
   render() {
     return (
       <div className="App">
         <h1>Simple React Todo App</h1>
         <InputTodo updateTodos={this.updateTodos.bind(this)} />
         <div>
-          <TodoList todos={this.state.todos} onTodoClick={() => {console.log('clicked')}} />
+          <TodoList todos={this.state.todos} onTodoClick={this.toggleTodo.bind(this)} />
         </div>
       </div>
     );
