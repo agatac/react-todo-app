@@ -6,3 +6,5 @@ ReactDOM.render(
   <App />,
   document.getElementById('root')
 );
+
+//this binds App component to the div#root element
