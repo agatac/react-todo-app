@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TodoList from './TodoList'
+import InputTodo from './InputTodo'
 
 //right now I'm storing todos as global variables
 const id = 0;
@@ -25,28 +26,14 @@ class App extends Component {
         text: text}]
     })
   }
-  //later I'll move input into a separate component
-  //right now it has to stay inside App because of updateTodos() which does setState()
+  //renders input field with prop function that will update the state
+  //App in the only component to update the state
+  //temporarily log something  when todoItem is clicked. Later that will toggle a todo
   render() {
-    let input //this holds a reference to input element (using ref on element)
     return (
       <div className="App">
         <h1>Simple React Todo App</h1>
-        <div>
-          <form onSubmit={e=>{
-              e.preventDefault()
-              if (!input.value.trim()) {
-                return
-              }
-              this.updateTodos(input.value)
-              input.value = ''
-            }}>
-            <input type="text" ref={node => {input = node}}/>
-            <button type="submit">
-              Add Todo
-            </button>
-            </form>
-        </div>
+        <InputTodo updateTodos={this.updateTodos.bind(this)} />
         <div>
           <TodoList todos={this.state.todos} onTodoClick={() => {console.log('clicked')}} />
         </div>
