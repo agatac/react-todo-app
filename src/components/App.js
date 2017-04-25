@@ -1,32 +1,40 @@
 import React, { Component } from 'react';
 import TodoList from './TodoList'
 import InputTodo from './InputTodo'
-
-//right now I'm storing todos as global variables
-const id = 0;
-const todos = []
+import TodoStore from '../stores/TodoStore'
 
 class App extends Component {
-  constructor(props) { //initialise
-    super(props) 
+  constructor() { //initialise
+    super() 
     this.state = {
-      id,
-      todos
+      id: TodoStore.getId(),
+      todos: TodoStore.getTodos()
     }
+    this.onChange = this.onChange.bind(this)
     this.updateTodos = this.updateTodos.bind(this) // bind the context IMPORTANT!
-    this.toggleTodo = this.toggleTodo.bind(this)
+    this.toggleTodo = this.toggleTodo.bind(this) //I'm still trying to understand context and referencing
   }
-  // updates state with new todo item
-  updateTodos(text) {
-    const newId = this.state.id + 1
+  
+  componentWillMount() { //runs only once
+    TodoStore.addChangeListener(this.onChange) //whenever a store emits a change this callback will fire
+  }
+  
+  componentWillUnmount() { //release listener
+    TodoStore.removeChangeListener(this.onChange);
+  }
+  
+  onChange() { //update the state
     this.setState({
-      id: newId,
-      todos: [...this.state.todos, { //array spread operator for easy append
-        id: newId,
-        completed: false,
-        text: text}]
+      id: TodoStore.getId(),
+      todos: TodoStore.getTodos()
     })
   }
+  
+  updateTodos(text) {
+    TodoStore.addTodo(text) //let store handle this
+  }
+  
+  //this is not moved to the store yet
   toggleTodo(id) {
     const todo = this.state.todos.filter((elem) => elem.id === id)[0] //find a todo to update
     if(todo !== undefined) {
@@ -42,9 +50,9 @@ class App extends Component {
     return (
       <div className="App">
         <h1>Simple React Todo App</h1>
-        <InputTodo updateTodos={this.updateTodos.bind(this)} />
+        <InputTodo updateTodos={this.updateTodos} />
         <div>
-          <TodoList todos={this.state.todos} onTodoClick={this.toggleTodo.bind(this)} />
+          <TodoList todos={this.state.todos} onTodoClick={this.toggleTodo} />
         </div>
       </div>
     );
