@@ -8,7 +8,6 @@ class App extends Component {
   constructor() { //initialise
     super() 
     this.state = {
-      id: TodoStore.getId(),
       todos: TodoStore.getTodos()
     }
     this.onChange = this.onChange.bind(this)
@@ -26,7 +25,6 @@ class App extends Component {
   
   onChange() { //update the state
     this.setState({
-      id: TodoStore.getId(),
       todos: TodoStore.getTodos()
     })
   }

@@ -2,6 +2,7 @@ import { EventEmitter } from 'events'
 import dispatcher from '../dispatchers/TodoDispatcher';
 
 const CHANGE_EVENT = 'change'
+let nextId = 0
 
 //functions below deal with data processing (adding/getting todos etc)
 //most logic goes here
@@ -11,10 +12,7 @@ class TodoStore extends EventEmitter {
     constructor() { //initial state
         super()
         this.todos = []
-        this.id = 0
     }
-    
-    increase(item) {return item+1} //just a helper function for clarity
     
     emitChange(){
         this.emit(CHANGE_EVENT)
@@ -28,19 +26,13 @@ class TodoStore extends EventEmitter {
         this.removeListener(CHANGE_EVENT, callback)
     }
     
-    getId() {
-        return this.id
-    }
-    
     getTodos() {
         return this.todos
     }
     
     addTodo(item) {
-        const newId = this.increase(this.getId())
-        this.id = newId
         this.todos = [...this.getTodos(), { //array spread operator for easy append
-            id: newId,
+            id: nextId++,
             completed: false,
             text: item}]
     }
