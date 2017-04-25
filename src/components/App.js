@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TodoList from './TodoList'
 import InputTodo from './InputTodo'
 import TodoStore from '../stores/TodoStore'
+import TodoActions from '../actions/TodoActions'
 
 class App extends Component {
   constructor() { //initialise
@@ -31,18 +32,11 @@ class App extends Component {
   }
   
   updateTodos(text) {
-    TodoStore.addTodo(text) //let store handle this
+    TodoActions.addTodo(text) //broadcast an action and let store handle this
   }
   
-  //this is not moved to the store yet
   toggleTodo(id) {
-    const todo = this.state.todos.filter((elem) => elem.id === id)[0] //find a todo to update
-    if(todo !== undefined) {
-      todo.completed = !todo.completed //toggle
-      this.setState(Object.assign({},this.state,{ //Object.assign() returns a new object (useful when you don't want to mutate data) and is simillar to array spread operator
-        todos:this.state.todos
-      }))
-    }
+    TodoActions.toggleTodo(id)
   }
   //renders input field with prop function that will update the state
   //App in the only component to update the state

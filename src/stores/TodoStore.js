@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-//import {dispatch, register} from '../dispatchers/TodoDispatcher';
+import dispatcher from '../dispatchers/TodoDispatcher';
 
 const CHANGE_EVENT = 'change'
 
@@ -43,32 +43,39 @@ class TodoStore extends EventEmitter {
             id: newId,
             completed: false,
             text: item}]
-        this.emitChange();
     }
     
     removeTodo(item) {
         
     }
     
-    toggleTodo(item) {
-        
+    toggleTodo(id) {
+        const todo = this.getTodos().filter((elem) => elem.id === id)[0] //find a todo to update
+        if(todo !== undefined) {
+          todo.completed = !todo.completed //toggle
+        }
     }
     
-    // dispatcherIndex = register(function(action){
-    // switch(action.type){
-    //   case 'ADD_TODO':
-    //     this.addTodo(action.item);
-    //     break;
-    //   case 'REMOVE_TODO':
-    //     this.removeTodo(action.item);
-    //     break;
-    //   case 'TOGGLE_TODO':
-    //     this.toggleTodo(action.item);
-    //     break;
-    //   default:
-    //     break;
-    // }})
+    //subscribe to actions and handle them accordingly
+    handleAction(action) {
+        switch(action.type){
+          case 'ADD_TODO':
+            this.addTodo(action.item);
+            break;
+          case 'REMOVE_TODO':
+            this.removeTodo(action.item);
+            break;
+          case 'TOGGLE_TODO':
+            this.toggleTodo(action.item);
+            break;
+          default:
+            break;
+        }
+        this.emitChange();
+    }
 }
 
 const todoStore = new TodoStore()
+dispatcher.register(todoStore.handleAction.bind(todoStore))
+
 export default todoStore
