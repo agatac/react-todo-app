@@ -20,5 +20,12 @@ export default {
             type: "TOGGLE_TODO",
             item: id
         })
+    },
+    
+    setFilter(filter) {
+        dispatcher.dispatch({
+            type: "SET_FILTER",
+            item: filter
+        })
     }
 }

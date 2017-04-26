@@ -12,6 +12,7 @@ class TodoStore extends EventEmitter {
     constructor() { //initial state
         super()
         this.todos = []
+        this.filter = "SHOW_ALL"
     }
     
     emitChange(){
@@ -30,6 +31,10 @@ class TodoStore extends EventEmitter {
         return this.todos
     }
     
+    getFilter() {
+        return this.filter
+    }
+    
     addTodo(item) {
         this.todos = [...this.getTodos(), { //array spread operator for easy append
             id: nextId++,
@@ -38,7 +43,7 @@ class TodoStore extends EventEmitter {
     }
     
     removeTodo(item) {
-        
+        //might add later but it's repetitive so I preferred to skip it for now
     }
     
     toggleTodo(id) {
@@ -48,22 +53,30 @@ class TodoStore extends EventEmitter {
         }
     }
     
+    setFilter(filter) {
+      this.filter = filter
+    }
+    
     //subscribe to actions and handle them accordingly
+    //would be better to put action types as constants because they're accessed in multiple places
     handleAction(action) {
         switch(action.type){
           case 'ADD_TODO':
-            this.addTodo(action.item);
-            break;
+            this.addTodo(action.item)
+            break
           case 'REMOVE_TODO':
-            this.removeTodo(action.item);
-            break;
+            this.removeTodo(action.item)
+            break
           case 'TOGGLE_TODO':
-            this.toggleTodo(action.item);
-            break;
+            this.toggleTodo(action.item)
+            break
+          case 'SET_FILTER':
+            this.setFilter(action.item)
+            break
           default:
-            break;
+            break
         }
-        this.emitChange();
+        this.emitChange()
     }
 }
 
